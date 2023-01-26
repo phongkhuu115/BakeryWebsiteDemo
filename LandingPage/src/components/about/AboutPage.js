@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AboutPic from '../../assets/aboutpage.png';
+import AboutPic from '../../assets/aboutpage.jpg';
 import { TfiHandPointDown } from 'react-icons/tfi';
 
 function AboutPage(props) {
@@ -34,12 +34,18 @@ function AboutPage(props) {
             See what people say about us
           </p>
           <TfiHandPointDown className='text-[20px] w-[200px] text-center mb-2'></TfiHandPointDown>
-          <div className='p-4 bg-[#59CE8F] text-[18px] font-[500] text-white w-[200px] text-center rounded-xl shadow-xl cursor-pointer'>
+          <a
+            href='#comment'
+            className='p-4 bg-[#59CE8F] text-[18px] font-[500] text-white w-[200px] text-center rounded-xl shadow-xl cursor-pointer block'>
             Comment
-          </div>
+          </a>
         </div>
-        <div>
-          <img src={AboutPic} alt='this is a very delicous cake' />
+        <div className='ml-20'>
+          <img
+            src={AboutPic}
+            alt='this is a very delicous cake'
+            className='aspect-[2/3] h-[700px]'
+          />
         </div>
       </div>
     </>
