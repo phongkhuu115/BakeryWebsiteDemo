@@ -4,13 +4,20 @@ const cors = require('cors');
 const connectToDatabase = require('./src/configs/database').connectToDatabase;
 const routes = require('./src/routes/routes');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
 //server-s config
 connectToDatabase();
+app.use(cookieParser());
 dotenv.config();
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: 'http://localhost:3000',
+  })
+);
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
