@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { success, fail } from '../redux/UserSlice';
 import { MdEmail, MdLock } from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { postRequest } from '../../helpers/api';
 
 function Login(props) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = 'Fkm Bakery | Login';
@@ -23,6 +24,9 @@ function Login(props) {
     try {
       const res = await postRequest('/login', body).catch(error => alert(error.response.data.message + ''));
       dispatch(success(res.data))
+      if (res.data.message === 'Login Success') {
+        navigate('/shop')
+      }
     } catch (error) {
     }
   };

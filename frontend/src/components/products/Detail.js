@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getRequest } from '../../helpers/api';
+import { getRequest, postRequest } from '../../helpers/api';
 import MainHeader from '../main/MainHeader';
 import { FaStar, FaWeightHanging, FaIceCream } from 'react-icons/fa';
 import { HiColorSwatch } from 'react-icons/hi';
@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom';
 
 function Detail(props) {
   const { state } = useLocation();
+
+  const quantityRef = useRef(0);
 
   const { id } = state;
 
@@ -40,10 +42,22 @@ function Detail(props) {
     },
   });
 
+  function add_to_cart(id) {
+    let body = {
+      Cart_ID: sessionStorage.getItem('user_cart'),
+      Cake_ID: id,
+      Cake_Quantity: quantityRef.current.value,
+    };
+    console.log(body)
+    postRequest('/addtocart', body).then((res) => {
+      console.log(res.data.message);
+    });
+  }
+
   useEffect(() => {
     getRequest(`/detail?id=${id}`).then((res) => {
       setDetail({ ...res.data.product });
-      document.title = 'Fkm Bakery | ' + res.data.product.cake.Cake_Name
+      document.title = 'Fkm Bakery | ' + res.data.product.cake.Cake_Name;
     });
     return () => {};
   }, []);
@@ -154,7 +168,7 @@ function Detail(props) {
           </div>
           <div className='border-t-2 py-2 flex flex-col gap-4'>
             <div className='flex gap-5 items-center'>
-              <NumericInput></NumericInput>
+              <NumericInput ref={quantityRef}></NumericInput>
               <p className='text-[22px]'>
                 <span className='text-[#F2921D] font-[600]'>
                   {detail.cake.Cake_Quantity > 1
@@ -165,7 +179,11 @@ function Detail(props) {
               </p>
             </div>
             <div className='flex text-white font-[600] gap-10'>
-              <button className='px-6 py-3 rounded-3xl bg-green-800 flex-1'>
+              <button
+                onClick={() => {
+                  add_to_cart(id);
+                }}
+                className='px-6 py-3 rounded-3xl bg-green-800 flex-1'>
                 Add to Cart
               </button>
               <button className='px-6 py-3 rounded-3xl outline outline-green-800 text-green-800 flex-1'>

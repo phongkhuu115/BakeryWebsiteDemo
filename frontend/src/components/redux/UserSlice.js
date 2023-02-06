@@ -7,7 +7,6 @@ const initialState = {
 };
 
 export const userSlice = createSlice({
-  name: 'user',
   initialState,
   reducers: {
     success: (state, action) => {
@@ -19,6 +18,7 @@ export const userSlice = createSlice({
       state.message = action.payload.message;
     },
   },
+  name: 'userData',
 });
 
 export const { success, fail } = userSlice.actions;

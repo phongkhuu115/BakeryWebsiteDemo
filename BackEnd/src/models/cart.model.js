@@ -20,6 +20,11 @@ const Cart = {
       }
     );
   },
+  GetCart: async (callback, id) => {
+    return await query('select * from cart where Cart_UserID = ?', [id], (err, rows) => {
+      callback(err, rows)
+    })
+  }
 };
 
 module.exports = Cart;

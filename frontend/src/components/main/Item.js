@@ -1,8 +1,12 @@
+import { useEffect, useState } from 'react';
+import { useSelector} from 'react-redux'
 import { FaStar } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { getRequest, postRequest } from '../../helpers/api';
 
 function Item({ props }) {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false)
   function viewDetail(id) {
     navigate('/shop/detail', {
       state: {
@@ -10,6 +14,22 @@ function Item({ props }) {
       },
     });
   }
+
+  function add_to_cart(e) {
+    e.stopPropagation();
+    let body = {
+      Cart_ID: sessionStorage.getItem('user_cart'),
+      Cake_ID: props.Cake_ID,
+      Cake_Quantity: 1
+    }
+    postRequest('/addtocart', body).then(res => {
+      console.log(res.data.message)
+    }) 
+  }
+
+  useEffect(() => {
+    
+  })
 
   return (
     <>
@@ -33,7 +53,7 @@ function Item({ props }) {
             <FaStar color='#03C988'></FaStar>
             <FaStar color='#03C988'></FaStar>
           </div>
-          <button className='px-4 py-2 outline outline-2 outline-[#333] rounded-3xl mt-2 font-[500] hover:outline-none hover:bg-green-800 hover:text-[#fff]'>
+          <button onClick={(e) => {add_to_cart(e)}} className='px-4 py-2 outline outline-2 outline-[#333] rounded-3xl mt-2 font-[500] hover:outline-none hover:bg-green-800 hover:text-[#fff]'>
             Add to Cart
           </button>
         </div>

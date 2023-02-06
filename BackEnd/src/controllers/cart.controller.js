@@ -13,6 +13,21 @@ const CartController = {
       });
     }, req.body);
   },
+  GetCart: async (req, res) => {
+    await Cart.GetCart((err, rows) => {
+      if (err) {
+        res.status(400).json({
+          message: err + '',
+        });
+      }
+      else {
+        res.status(200).json({
+          message: 'success',
+          cart: rows[0]
+        })
+      }
+    }, req.query.id);
+  },
 };
 
 module.exports = CartController;

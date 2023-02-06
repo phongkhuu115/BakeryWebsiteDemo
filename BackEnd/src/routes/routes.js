@@ -20,6 +20,7 @@ routes.get('/category', ProductController.GetAllCategory);
 routes.get('/products', ProductController.GetProduct);
 routes.get('/detail', ProductController.ViewDetail);
 //Cart
+routes.get('/getcart', CartController.GetCart);
 routes.post('/addtocart', CartController.AddToCart);
 
 module.exports = routes;

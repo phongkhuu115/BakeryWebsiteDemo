@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { getRequest } from '../../helpers/api';
 import MainHeader from './MainHeader';
 import Item from './Item';
@@ -7,7 +8,11 @@ import { MdFilterList } from 'react-icons/md';
 function MainPage(props) {
   const [prods, setProds] = useState([]);
 
+  const currentUser = useSelector(state => state.userData.user.User_ID)
   useEffect(() => {
+    getRequest(`/getcart?id=${currentUser}`).then(res => {
+      sessionStorage.setItem('user_cart', res.data.cart.Cart_ID)
+    })
     getRequest('/products?page=1&limit=10').then((res) =>
       setProds(res.data.cake)
     );
