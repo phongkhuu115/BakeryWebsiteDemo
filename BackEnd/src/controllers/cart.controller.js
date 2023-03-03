@@ -19,11 +19,25 @@ const CartController = {
         res.status(400).json({
           message: err + '',
         });
+      } else {
+        res.status(200).json({
+          message: 'success',
+          cart: rows[0],
+        });
+      }
+    }, req.query.id);
+  },
+  GetAllItems: async (req, res) => {
+    await Cart.GetAllItems((err, rows) => {
+      if (err) {
+        res.status(400).json({
+          message: err + '',
+        });
       }
       else {
         res.status(200).json({
           message: 'success',
-          cart: rows[0]
+          cart: rows
         })
       }
     }, req.query.id);

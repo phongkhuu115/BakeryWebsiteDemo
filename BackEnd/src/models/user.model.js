@@ -23,25 +23,25 @@ const User = {
     const salt = await bcrypt.genSalt(10);
     const passwordHashed = await bcrypt.hash(body.password, salt);
     let insertData = {
-      User_ID: crypto.randomUUID(),
-      User_FullName: StringNormalize(body.User_FullName),
+      user_id: crypto.randomUUID(),
       username: body.username.trim(),
       password: passwordHashed,
-      User_Email: body.User_Email.trim(),
-      User_Telephone: body.User_Telephone.trim(),
-      User_Address: body.User_Address,
-      User_Image:
+      user_email: body.User_Email.trim(),
+      user_telephone: body.User_Telephone.trim(),
+      user_fullname: StringNormalize(body.User_FullName),
+      user_address: body.User_Address,
+      user_image:
         'https://firebasestorage.googleapis.com/v0/b/bakerywebsitedemo.appspot.com/o/defaultuser.png?alt=media&token=73731670-5249-4154-949c-29c2abdc9938',
-      Refresh_Token: null,
-      User_Gender: body.User_Gender,
+      user_gender: body.User_Gender,
+      refresh_token: null,
     };
     return db.query(
-      'INSERT INTO users VALUES(?,?,?,?,?,?,?,?,?,?)',
+      'INSERT INTO users(user_id,username,password,user_email,user_telephone,user_fullname,user_address,user_image,user_gender,refresh_token) VALUES(?,?,?,?,?,?,?,?,?,?)',
       Object.values(insertData),
       (err, rows) => {
-        db.query('INSERT INTO cart VALUES(?,?)', [
+        db.query('INSERT INTO carts VALUES(?,?)', [
           crypto.randomUUID(),
-          insertData.User_ID,
+          insertData.user_id,
         ]);
         callback(err, rows);
       }
@@ -50,9 +50,13 @@ const User = {
   Login: async (body, success, fail) => {
     return db.query(
       'SELECT * FROM users WHERE username = ?',
-      body.username,
+      [body.username],
       (error, result) => {
         let userData = { ...result[0] };
+        // console.log(!Object.keys(userData).length)
+        if (!Object.keys(userData).length) {
+          return fail(new Error('Wrong Username'));
+        }
         let is_admin = false;
         if (result[0].username === process.env.ADMIN_USRNME) {
           is_admin = true;
@@ -64,7 +68,9 @@ const User = {
         return bcrypt.compare(body.password, result[0].password, (err, res) => {
           if (res) {
             delete userData['password'];
-            delete userData['Refresh_Token'];
+            delete userData['refresh_token'];
+            delete userData['created_at'];
+            delete userData['updated_at'];
             const accessToken = authMiddleWare.GenerateAccessToken(
               result[0].User_ID,
               is_admin

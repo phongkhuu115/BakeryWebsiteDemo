@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { success, fail } from '../redux/UserSlice';
+import { loginSuccess, loginFail } from '../redux/UserSlice';
 import { MdEmail, MdLock } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
-import { postRequest } from '../../helpers/api';
+import { postRequest } from '../../utils/api';
 
 function Login(props) {
   const [username, setUsername] = useState('');
@@ -23,8 +23,9 @@ function Login(props) {
     };
     try {
       const res = await postRequest('/login', body).catch(error => alert(error.response.data.message + ''));
-      dispatch(success(res.data))
+      console.log(res.data)
       if (res.data.message === 'Login Success') {
+        dispatch(loginSuccess(res.data))
         navigate('/shop')
       }
     } catch (error) {

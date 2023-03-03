@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getRequest, postRequest } from '../../helpers/api';
+import { getRequest, postRequest, postRequestToken } from '../../utils/api';
 import MainHeader from '../main/MainHeader';
 import { FaStar, FaWeightHanging, FaIceCream } from 'react-icons/fa';
 import { HiColorSwatch } from 'react-icons/hi';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md';
 import { NumericInput } from '../others/NumericInput';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function Detail(props) {
   const { state } = useLocation();
@@ -14,6 +15,8 @@ function Detail(props) {
   const quantityRef = useRef(0);
 
   const { id } = state;
+
+  const { access_token } = useSelector((e) => e.userData);
 
   const [detail, setDetail] = useState({
     cake: {
@@ -42,17 +45,17 @@ function Detail(props) {
     },
   });
 
-  function add_to_cart(id) {
+  const add_to_cart = (id) => {
     let body = {
       Cart_ID: sessionStorage.getItem('user_cart'),
       Cake_ID: id,
       Cake_Quantity: quantityRef.current.value,
     };
-    console.log(body)
-    postRequest('/addtocart', body).then((res) => {
+    console.log(body);
+    postRequestToken('/addtocart', body, access_token).then((res) => {
       console.log(res.data.message);
     });
-  }
+  };
 
   useEffect(() => {
     getRequest(`/detail?id=${id}`).then((res) => {
@@ -168,7 +171,10 @@ function Detail(props) {
           </div>
           <div className='border-t-2 py-2 flex flex-col gap-4'>
             <div className='flex gap-5 items-center'>
-              <NumericInput ref={quantityRef}></NumericInput>
+              <NumericInput
+                style='px-5 py-2'
+                value={0}
+                ref={quantityRef}></NumericInput>
               <p className='text-[22px]'>
                 <span className='text-[#F2921D] font-[600]'>
                   {detail.cake.Cake_Quantity > 1

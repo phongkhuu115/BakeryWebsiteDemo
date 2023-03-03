@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { getRequest } from '../../helpers/api';
+import { useSelector, useDispatch } from 'react-redux';
+import { storeCartID, failFetch } from '../redux/CartIDSlice';
+import { getRequest, getRequestToken } from '../../utils/api';
 import MainHeader from './MainHeader';
 import Item from './Item';
 import { MdFilterList } from 'react-icons/md';
@@ -8,12 +9,16 @@ import { MdFilterList } from 'react-icons/md';
 function MainPage(props) {
   const [prods, setProds] = useState([]);
 
-  const currentUser = useSelector(state => state.userData.user.User_ID)
+  const currentUser = useSelector(state => state.userData.user.user_id)
+  const { access_token } = useSelector(state => state.userData)
+  const dispatch = useDispatch()
   useEffect(() => {
-    getRequest(`/getcart?id=${currentUser}`).then(res => {
-      sessionStorage.setItem('user_cart', res.data.cart.Cart_ID)
+    getRequestToken(`/getcart?id=${currentUser}`, access_token).then(res => {
+      if (res.data.message === 'success') {
+        dispatch(storeCartID(res.data))
+      }
     })
-    getRequest('/products?page=1&limit=10').then((res) =>
+    getRequest('/products?page=1&limit=8').then((res) =>
       setProds(res.data.cake)
     );
   }, []);

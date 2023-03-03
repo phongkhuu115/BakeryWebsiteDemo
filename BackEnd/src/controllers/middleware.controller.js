@@ -4,7 +4,7 @@ dotenv.config();
 
 const middlewareController = {
   VerifyJWT: (req, res, next) => {
-    const token = req.headers.token;
+    const token = req.headers.authorization;
     if (token) {
       const accessToken = token.split(' ')[1];
       jwt.verify(accessToken, process.env.JWT_SECRET_KEY, (err, user) => {
@@ -12,9 +12,10 @@ const middlewareController = {
           res.status(403).json({
             message: 'Token invalid',
           });
+        } else {
+          req.user = user;
+          next();
         }
-        req.user = user;
-        next();
       });
     } else {
       res.status(401).json({

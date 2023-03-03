@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import logo from '../../assets/logo.png';
 import { FaSearch, FaShoppingCart, FaUser } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { getRequest } from '../../helpers/api';
-
+import { getRequest } from '../../utils/api';
+import { useSelector } from 'react-redux';
 
 function MainHeader(props) {
   const [categories, setCategories] = useState([]);
+
+  const { user } = useSelector((state) => state.userData);
 
   useEffect(() => {
     getRequest('/category').then((res) => {
@@ -16,7 +18,7 @@ function MainHeader(props) {
 
   return (
     <>
-      <header className='flex justify-around items-center font-raleway shadow-lg py-2'>
+      <header className='flex justify-around items-center font-raleway shadow-lg py-2 bg-white'>
         <div className='flex items-center'>
           <img src={logo} alt='' className='w-[80px] mr-2' />
           <p className='font-dancing-script text-[20px] font-[700]'>
@@ -31,8 +33,8 @@ function MainHeader(props) {
               </option>
               {categories.map((item) => {
                 return (
-                  <option key={item.Category_ID} value={item.Category_ID}>
-                    {item.Category_Name}
+                  <option key={item.cake_category} value={item.cake_category}>
+                    {item.cake_category}
                   </option>
                 );
               })}
@@ -50,16 +52,18 @@ function MainHeader(props) {
           />
           <FaSearch className='absolute top-[50%] translate-y-[-50%] right-4'></FaSearch>
         </div>
-        <ul className='flex'>
+        <ul className='flex items-center'>
           <li>
             <div className='flex items-center font-[700] mx-8'>
-              <FaUser size={20} className='mr-2'></FaUser>
-              Account
+              <div className='mr-3 rounded-full border-[1px] p-2'>
+                {user.user_image ? <img className='w-[20px] aspect-[1/1] object-cover' src={ user.user_image} alt="user avatar" /> : <FaUser size={20} className='mr-2'></FaUser> }
+              </div>
+              {user ? user.user_fullname : 'Account'}
             </div>
           </li>
           <li>
             <div>
-              <Link className='flex items-center font-[700] mx-8'>
+              <Link to='/shop/cart' className='flex items-center font-[700] mx-8'>
                 <FaShoppingCart size={20} className='mr-2'></FaShoppingCart>
                 Cart
               </Link>

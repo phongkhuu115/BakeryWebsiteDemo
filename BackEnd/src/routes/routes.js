@@ -5,6 +5,7 @@ const MiddlewareController = require('../controllers/middleware.controller');
 const ProductController = require('../controllers/product.controller');
 const User = require('../models/user.model');
 const CartController = require('../controllers/cart.controller');
+const OrderController = require('../controllers/order.controller');
 
 routes.get(
   '/getalluser',
@@ -20,7 +21,27 @@ routes.get('/category', ProductController.GetAllCategory);
 routes.get('/products', ProductController.GetProduct);
 routes.get('/detail', ProductController.ViewDetail);
 //Cart
-routes.get('/getcart', CartController.GetCart);
-routes.post('/addtocart', CartController.AddToCart);
+routes.get('/getcart', MiddlewareController.VerifyJWT, CartController.GetCart);
+routes.get(
+  '/getitems',
+  MiddlewareController.VerifyJWT,
+  CartController.GetAllItems
+);
+routes.post(
+  '/addtocart',
+  MiddlewareController.VerifyJWT,
+  CartController.AddToCart
+);
+//Order
+routes.post(
+  '/createOrder',
+  MiddlewareController.VerifyJWT,
+  OrderController.CreateOrder
+);
+routes.post(
+  '/createPreOrder',
+  MiddlewareController.VerifyJWT,
+  OrderController.CreatePreOrder
+);
 
 module.exports = routes;

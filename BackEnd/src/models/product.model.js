@@ -6,18 +6,18 @@ dotenv.config();
 const query = util.promisify(db.query).bind(db);
 async function getTotal() {
   return await query(
-    "select count(*) 'Total_Product', ROUND(count(*)/10,0) 'Total_Page' from cake"
+    "select count(*) 'Total_Product', ROUND(count(*)/10,0) 'Total_Page' from cakes"
   );
 }
 
 const Product = {
   GetAllCategory: (callback) => {
-    return db.query('select * from category', callback);
+    return db.query('select distinct cake_category from cakes', callback);
   },
   GetProduct: async (callback, page, number) => {
     const total = await getTotal();
     return db.query(
-      `select * from cake limit ${
+      `select * from cakes limit ${
         (Number(page) - 1) * Number(number)
       }, ${Number(number)}`,
       (err, rows) => {

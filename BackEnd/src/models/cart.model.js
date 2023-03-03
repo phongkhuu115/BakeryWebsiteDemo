@@ -21,7 +21,12 @@ const Cart = {
     );
   },
   GetCart: async (callback, id) => {
-    return await query('select * from cart where Cart_UserID = ?', [id], (err, rows) => {
+    return await query('select * from carts where user_id = ?', [id], (err, rows) => {
+      callback(err, rows)
+    })
+  },
+  GetAllItems: async (callback, id) => {
+    return await query('select cakes.cake_id, cake_name, cake_price, cake_img, cart_detail.cake_quantity from cart_detail join cakes on cart_detail.cake_id = cakes.cake_id WHERE cart_id = ?', [id], (err, rows) => {
       callback(err, rows)
     })
   }

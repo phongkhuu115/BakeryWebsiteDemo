@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { useSelector} from 'react-redux'
 import { FaStar } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { getRequest, postRequest } from '../../helpers/api';
+import { getRequest, postRequest, postRequestToken } from '../../utils/api';
 
 function Item({ props }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false)
+  const { access_token} = useSelector(state => state.userData)
+  const { cartID } = useSelector(state => state.cart)
   function viewDetail(id) {
     navigate('/shop/detail', {
       state: {
@@ -18,11 +20,11 @@ function Item({ props }) {
   function add_to_cart(e) {
     e.stopPropagation();
     let body = {
-      Cart_ID: sessionStorage.getItem('user_cart'),
-      Cake_ID: props.Cake_ID,
+      Cart_ID: cartID,
+      Cake_ID: props.cake_id,
       Cake_Quantity: 1
     }
-    postRequest('/addtocart', body).then(res => {
+    postRequestToken('/addtocart', body, access_token).then(res => {
       console.log(res.data.message)
     }) 
   }
@@ -34,17 +36,17 @@ function Item({ props }) {
   return (
     <>
       <div
-        onClick={() => viewDetail(props.Cake_ID)}
+        onClick={() => viewDetail(props.cake_id)}
         className='font-sans cursor-pointer p-4 outline outline-1 outline-[#eee] rounded-sm shadow-md hover:-translate-y-2 transition-transform'>
         <img
-          src={props.Cake_Image}
+          src={props.cake_img}
           alt='cake img'
           className='w-[full] aspect-[1/1] rounded-md object-cover'
         />
         <div className='mt-2'>
           <div className='flex justify-between'>
-            <p className='font-[500]'>{props.Cake_Name}</p>
-            <p className='font-[500]'>{props.Cake_Price}$</p>
+            <p className='font-[500]'>{props.cake_name}</p>
+            <p className='font-[500]'>{props.cake_price}$</p>
           </div>
           <div className='flex gap-2 my-2'>
             <FaStar color='#03C988'></FaStar>
