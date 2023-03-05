@@ -27,7 +27,6 @@ const Cart = (props) => {
 
   const handleCheckAll = (e) => {
     if (e.target.checked) {
-      console.log('checked');
       const newCheckboxValues = {};
       setCheckboxValues({});
       cartItem.forEach((item) => {
@@ -51,12 +50,15 @@ const Cart = (props) => {
       orderPrices: JSON.stringify(prices)
     };
     postRequestToken('/createPreOrder', body, access_token).then((res) => {
-      console.log(res.data)
       if (res.data.order_id) {
         navigate('/order', { state: { recent_order: res.data.order_id, recent_summary: res.data.order_summary } });
       }
     });
   };
+
+  useEffect(() => {
+    document.title = 'Fkm Bakery | Cart';
+  })
 
   useEffect(() => {
     getRequestToken(`/getitems?id=${cartID}`, access_token).then((res) => {

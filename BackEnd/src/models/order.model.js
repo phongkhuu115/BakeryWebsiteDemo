@@ -5,18 +5,20 @@ const crypto = require('crypto');
 const query = util.promisify(db.query).bind(db);
 
 const Order = {
-  CreateOrder: async (callback, orderInfo, orderDetail) => {
+  CreateOrder: async (callback, orderInfo) => {
+    console.log(orderInfo);
     try {
       await query(
-        'INSERT INTO orders(order_id,order_userID,order_address,order_payment) VALUES(?,?,?,?)',
+        'INSERT INTO orders(order_id,order_userID,order_address,order_payment,order_summary) VALUES(?,?,?,?,?)',
         [
           orderInfo.order_id,
           orderInfo.user_id,
           orderInfo.order_address,
           orderInfo.order_payment,
+          orderInfo.order_summary,
         ]
       );
-      const detail_array = JSON.parse(orderDetail);
+      const detail_array = JSON.parse(orderInfo.order_detail);
       detail_array.forEach(async (item) => {
         await query('INSERT INTO order_detail VALUES(?,?,?,?)', [
           orderInfo.order_id,
@@ -35,7 +37,7 @@ const Order = {
     let prices = JSON.parse(orderPrices);
     let summary = 0;
     for (let i = 0; i < prices.length; i++) {
-      summary += prices[i]
+      summary += prices[i];
     }
     callback(uuid, summary);
   },

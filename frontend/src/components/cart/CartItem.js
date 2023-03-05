@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { NumericInput } from '../others/NumericInput';
 import { TiDeleteOutline } from 'react-icons/ti';
 import { useDispatch } from 'react-redux';
@@ -13,6 +13,7 @@ const CartItem = (props) => {
 
   let ifPayData = {
     cake_id: data.cake_id,
+    cake_name: data.cake_name,
     cake_price: data.cake_price,
   };
 
@@ -23,8 +24,7 @@ const CartItem = (props) => {
     };
     if (props.checked) {
       dispatch(storePayItems(ifPayData));
-    }
-    else {
+    } else {
       dispatch(removePayItems(ifPayData));
     }
     return () => {};
@@ -45,7 +45,6 @@ const CartItem = (props) => {
               ...ifPayData,
               cake_quantity: inputRef.current.value,
             };
-            console.log(ifPayData)
             if (e.target.checked) {
               dispatch(storePayItems(ifPayData));
             } else {
@@ -55,7 +54,7 @@ const CartItem = (props) => {
         />
         <img
           src={data.cake_img}
-          alt='cake image'
+          alt='cake'
           className='w-[100px] aspect-[1/1] rounded-xl object-cover'
         />
         <div

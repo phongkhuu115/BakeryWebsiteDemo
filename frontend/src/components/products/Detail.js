@@ -51,9 +51,7 @@ function Detail(props) {
       Cake_ID: id,
       Cake_Quantity: quantityRef.current.value,
     };
-    console.log(body);
     postRequestToken('/addtocart', body, access_token).then((res) => {
-      console.log(res.data.message);
     });
   };
 

@@ -23,7 +23,6 @@ function Login(props) {
     };
     try {
       const res = await postRequest('/login', body).catch(error => alert(error.response.data.message + ''));
-      console.log(res.data)
       if (res.data.message === 'Login Success') {
         dispatch(loginSuccess(res.data))
         navigate('/shop')

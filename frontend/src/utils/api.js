@@ -45,3 +45,16 @@ export async function postRequestToken(URL, payload, token) {
     withCredentials: true,
   });
 }
+
+export async function getCity() {
+  return await axios('https://provinces.open-api.vn/api/p/',{
+    method: 'GET',
+  })
+}
+
+export async function getCityByCode(code) {
+  return await axios(`https://provinces.open-api.vn/api/p/${code}?depth=3`,{
+    method: 'GET',
+  })
+}
+

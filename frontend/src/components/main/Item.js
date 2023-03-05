@@ -25,7 +25,6 @@ function Item({ props }) {
       Cake_Quantity: 1
     }
     postRequestToken('/addtocart', body, access_token).then(res => {
-      console.log(res.data.message)
     }) 
   }
 
