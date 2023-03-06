@@ -8,9 +8,12 @@ import { MdOutlineKeyboardArrowRight } from 'react-icons/md';
 import { NumericInput } from '../others/NumericInput';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Comment from './Comment';
 
 function Detail(props) {
   const { state } = useLocation();
+
+  const { cartID } = useSelector((state) => state.cart);
 
   const quantityRef = useRef(0);
 
@@ -18,47 +21,54 @@ function Detail(props) {
 
   const { access_token } = useSelector((e) => e.userData);
 
+  const { user } = useSelector((state) => state.userData);
+
+  const [ratings, setRatings] = useState([]);
+
   const [detail, setDetail] = useState({
     cake: {
-      Cake_ID: '',
-      Cake_Name: '',
-      Cake_Price: 15.73,
-      Cake_Quantity: 0,
-      Cake_InfomationID: '',
-      Cake_NutritionID: '',
-      Cake_IngredientID: '',
-      Cake_Image: '',
-      Cake_CategoryID: '',
+      cake_id: '',
+      cake_name: '',
+      cake_price: 15.73,
+      cake_quantity: 0,
+      cake_infomationID: '',
+      cake_nutritionID: '',
+      cake_img: '',
     },
     info: {
-      Infomation_ID: '',
-      Information_Weight: 0,
-      Infomation_Cream: 0,
-      Infomation_Color: '',
+      cake_infomationID: '',
+      cake_weight: 0,
+      cake_cream: 0,
+      cake_color: '',
     },
     nutrition: {
-      Nutrition_ID: '',
-      Nutrition_Fat: 0,
-      Nutrition_Sugar: 0,
-      Nutrition_Calo: 0,
-      Nutrition_Carbohydrate: 0,
+      cake_nutritionID: '',
+      cake_fat: 0,
+      cake_sugar: 0,
+      cake_calo: 0,
     },
   });
 
   const add_to_cart = (id) => {
     let body = {
-      Cart_ID: sessionStorage.getItem('user_cart'),
+      Cart_ID: cartID,
       Cake_ID: id,
       Cake_Quantity: quantityRef.current.value,
     };
-    postRequestToken('/addtocart', body, access_token).then((res) => {
-    });
+    postRequestToken('/addtocart', body, access_token).then((res) => {});
   };
+
+  console.log(id);
 
   useEffect(() => {
     getRequest(`/detail?id=${id}`).then((res) => {
       setDetail({ ...res.data.product });
-      document.title = 'Fkm Bakery | ' + res.data.product.cake.Cake_Name;
+      document.title = 'Fkm Bakery | ' + res.data.product.cake.cake_name;
+    });
+    getRequest(`/getallrating?id=${id}`).then((res) => {
+      if (res.data.message === 'success') {
+        setRatings([...res.data.rating]);
+      }
     });
     return () => {};
   }, []);
@@ -74,33 +84,33 @@ function Detail(props) {
             Shop <MdOutlineKeyboardArrowRight></MdOutlineKeyboardArrowRight>
           </Link>
         </li>
-        <li>{detail.cake.Cake_Name}</li>
+        <li>{detail.cake.cake_name}</li>
       </ul>
       <main className='flex flex-col px-10 gap-10 lg:flex lg:flex-row lg:gap-20'>
         <div className='flex flex-col sm:max-lg:justify-center gap-5'>
           <img
-            src={detail.cake.Cake_Image}
+            src={detail.cake.cake_img}
             alt='cake'
             className='h-[600px] aspect-[1/1] object-cover rounded-xl'
           />
           <div className='flex justify-between'>
             <img
-              src={detail.cake.Cake_Image}
+              src={detail.cake.cake_img}
               alt='cake'
               className='h-[120px] aspect-[1/1] object-cover rounded-xl'
             />
             <img
-              src={detail.cake.Cake_Image}
+              src={detail.cake.cake_img}
               alt='cake'
               className='h-[120px] aspect-[1/1] object-cover rounded-xl'
             />
             <img
-              src={detail.cake.Cake_Image}
+              src={detail.cake.cake_img}
               alt='cake'
               className='h-[120px] aspect-[1/1] object-cover rounded-xl'
             />
             <img
-              src={detail.cake.Cake_Image}
+              src={detail.cake.cake_img}
               alt='cake'
               className='h-[120px] aspect-[1/1] object-cover rounded-xl'
             />
@@ -109,10 +119,10 @@ function Detail(props) {
         <div className='flex-1'>
           <div className='font-[600] pb-2 text-[#333]'>
             <h1 className='text-[32px] font-raleway'>
-              {detail.cake.Cake_Name}
+              {detail.cake.cake_name}
             </h1>
             <h3 className='text-[24px] font-sans'>
-              $ {detail.cake.Cake_Price}
+              $ {detail.cake.cake_price}
             </h3>
             <div className='flex gap-2 mt-2 items-center'>
               <FaStar color='#03C988'></FaStar>
@@ -126,23 +136,19 @@ function Detail(props) {
           <div className='font-[600] border-y-2 pb-2'>
             <h1 className='text-[#333] font-raleway text-[28px]'>Infomation</h1>
             <p className='font-normal mb-2 text-[#333]'>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima,
-              itaque quos provident dignissimos eum nisi deserunt ipsum tempora
-              corrupti ipsam et similique excepturi consequuntur exercitationem
-              labore hic nihil magni distinctio.
+              {detail.cake.cake_desc}
             </p>
             <div className='flex gap-x-5 text-[#ECF9FF] mb-2'>
               <div className='flex items-center gap-1 px-3 py-2 rounded-3xl bg-[#354259]'>
                 <FaWeightHanging size={20}></FaWeightHanging>{' '}
-                {detail.info.Information_Weight} gram
+                {detail.info.cake_weight} gram
               </div>
               <div className='flex items-center gap-1 px-3 py-2 rounded-3xl bg-[#B2A4FF]'>
-                <FaIceCream size={20}></FaIceCream>{' '}
-                {detail.info.Infomation_Cream} %
+                <FaIceCream size={20}></FaIceCream> {detail.info.cake_cream} %
               </div>
               <div className='flex items-center gap-1 px-3 py-2 rounded-3xl bg-gradient-to-r from-purple-500 to-pink-500'>
                 <HiColorSwatch size={20}></HiColorSwatch>{' '}
-                {detail.info.Infomation_Color}
+                {detail.info.cake_color}
               </div>
             </div>
           </div>
@@ -152,19 +158,15 @@ function Detail(props) {
             </h1>
             <div className='flex justify-between items-center font-bold'>
               <p className='text-[26px]'>Calo</p>
-              <p className='text-[38px]'>{detail.nutrition.Nutrition_Calo}</p>
+              <p className='text-[38px]'>{detail.nutrition.cake_calo}</p>
             </div>
             <div className='flex justify-between py-1'>
               <p>Fat</p>
-              <p>{detail.nutrition.Nutrition_Fat} gram</p>
+              <p>{detail.nutrition.cake_fat} gram</p>
             </div>
             <div className='flex justify-between py-1'>
               <p>Sugar</p>
-              <p>{detail.nutrition.Nutrition_Sugar} gram</p>
-            </div>
-            <div className='flex justify-between py-1'>
-              <p>Carbohydrate</p>
-              <p>{detail.nutrition.Nutrition_Carbohydrate} gram</p>
+              <p>{detail.nutrition.cake_sugar} gram</p>
             </div>
           </div>
           <div className='border-t-2 py-2 flex flex-col gap-4'>
@@ -175,11 +177,9 @@ function Detail(props) {
                 ref={quantityRef}></NumericInput>
               <p className='text-[22px]'>
                 <span className='text-[#F2921D] font-[600]'>
-                  {detail.cake.Cake_Quantity > 1
-                    ? detail.cake.Cake_Quantity + ' cakes'
-                    : detail.cake.Cake_Quantity + ' cake'}
+                  {detail.cake.cake_quantity}
                 </span>{' '}
-                Available
+                available in store
               </p>
             </div>
             <div className='flex text-white font-[600] gap-10'>
@@ -197,6 +197,14 @@ function Detail(props) {
           </div>
         </div>
       </main>
+      <div className='p-10'>
+        <h1 className='text-[32px] font-[600]'>Customer Thoughts</h1>
+        <div className='mt-5'>
+          {ratings.map((item) => {
+            return <Comment user={user} rating={item}></Comment>;
+          })}
+        </div>
+      </div>
     </>
   );
 }

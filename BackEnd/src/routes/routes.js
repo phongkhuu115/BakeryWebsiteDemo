@@ -20,6 +20,7 @@ routes.post('/refresh', AuthController.RefreshToken);
 routes.get('/category', ProductController.GetAllCategory);
 routes.get('/products', ProductController.GetProduct);
 routes.get('/detail', ProductController.ViewDetail);
+routes.get('/getallrating', ProductController.GetAllRating);
 //Cart
 routes.get('/getcart', MiddlewareController.VerifyJWT, CartController.GetCart);
 routes.get(

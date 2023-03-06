@@ -71,7 +71,7 @@ function MainPage(props) {
         </div>
         <div className='grid grid-cols-4 gap-4'>
           {prods.map((item) => {
-            return <Item key={item.Cake_ID} props={item}></Item>;
+            return <Item key={item.cake_id} props={item}></Item>;
           })}
         </div>
       </main>

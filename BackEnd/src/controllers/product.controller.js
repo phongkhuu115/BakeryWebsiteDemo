@@ -36,6 +36,19 @@ const ProductController = {
       });
     }, id);
   },
+  GetAllRating: async (req, res) => {
+    try {
+      await Product.GetAllRating((rows) => {
+        res.status(200).json({
+          message: 'success',
+          rating: rows
+        })
+      }, req.query.id)
+    }
+    catch (err) {
+      res.json(err + '')
+    }
+  }
 };
 
 module.exports = ProductController;

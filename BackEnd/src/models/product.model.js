@@ -27,15 +27,15 @@ const Product = {
   },
   ViewDetail: async (callback, id) => {
     try {
-      const rows = await query(`select * from cake where cake.Cake_ID = ?`, id);
-      const infoID = rows[0].Cake_InfomationID;
-      const nutritionID = rows[0].Cake_NutritionID;
+      const rows = await query(`select * from cakes where cakes.cake_id = ?`, id);
+      const infoID = rows[0].cake_infomationID;
+      const nutritionID = rows[0].cake_nutritionID;
       const info = await query(
-        `select * from cake_infomation where Infomation_ID = ?`,
+        `select * from cake_infomation where cake_infomationID = ?`,
         infoID
       );
       const nutrition = await query(
-        `select * from cake_nutrition where Nutrition_ID = ?`,
+        `select * from cake_nutrition where cake_nutritionID = ?`,
         nutritionID
       );
       const data = {
@@ -48,6 +48,14 @@ const Product = {
       console.log(err);
     }
   },
+  GetAllRating: async (callback, id) => {
+    try {
+      const rows = await query('select * from cake_rate where cake_id = ?', [id])
+      callback(rows)
+    } catch (err) {
+      throw new Error(err)
+    }
+  }
 };
 
 module.exports = Product;
