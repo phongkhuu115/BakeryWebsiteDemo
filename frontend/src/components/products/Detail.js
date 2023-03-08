@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getRequest, postRequest, postRequestToken } from '../../utils/api';
+import { getRequest, postRequestToken } from '../../utils/api';
 import MainHeader from '../main/MainHeader';
 import { FaStar, FaWeightHanging, FaIceCream } from 'react-icons/fa';
 import { HiColorSwatch } from 'react-icons/hi';
@@ -9,6 +9,8 @@ import { NumericInput } from '../others/NumericInput';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Comment from './Comment';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Detail(props) {
   const { state } = useLocation();
@@ -55,7 +57,20 @@ function Detail(props) {
       Cake_ID: id,
       Cake_Quantity: quantityRef.current.value,
     };
-    postRequestToken('/addtocart', body, access_token).then((res) => {});
+    postRequestToken('/addtocart', body, access_token).then((res) => {
+      if (res.status === 200) {
+        toast.success(`${detail.cake.cake_name} added to cart`, {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+        });
+      }
+    });
   };
 
   console.log(id);
@@ -76,6 +91,7 @@ function Detail(props) {
   return (
     <>
       <MainHeader></MainHeader>
+      <ToastContainer></ToastContainer>
       <ul className='flex mx-10 my-5 gap-1'>
         <li>
           <Link

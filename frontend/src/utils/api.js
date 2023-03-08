@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:3333/v1/api';
+const baseURL = 'https://bakery.fkmdev.site/v1/api';
 
 export async function getRequest(URL) {
   return await axios(`${baseURL + URL}`, {

@@ -7,6 +7,7 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import userReducer from './UserSlice';
 import cartIDReducer from './CartIDSlice';
 import cartPaymentReducer from './CartPayment';
+import cartAddReducer from './CartAddSlice'
 
 const userConfig = {
   key: 'user',
@@ -28,6 +29,7 @@ export const store = configureStore({
     userData: persistedUser,
     cart: persistedCartID,
     cartPayment: cartPaymentReducer,
+    cartAdd: cartAddReducer
   },
 });
 

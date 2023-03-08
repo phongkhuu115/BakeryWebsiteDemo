@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import logo from '../../assets/logo.png';
 import { FaSearch, FaShoppingCart, FaUser } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,8 @@ function MainHeader(props) {
   const [categories, setCategories] = useState([]);
 
   const { user } = useSelector((state) => state.userData);
+
+  const notiRef = useRef(null);
 
   useEffect(() => {
     getRequest('/category').then((res) => {
@@ -56,14 +58,24 @@ function MainHeader(props) {
           <li>
             <div className='flex items-center font-[700] mx-8'>
               <div className='mr-3 rounded-full border-[1px] p-2'>
-                {user.user_image ? <img className='w-[20px] aspect-[1/1] object-cover' src={ user.user_image} alt="user avatar" /> : <FaUser size={20} className='mr-2'></FaUser> }
+                {user.user_image ? (
+                  <img
+                    className='w-[20px] aspect-[1/1] object-cover'
+                    src={user.user_image}
+                    alt='user avatar'
+                  />
+                ) : (
+                  <FaUser size={20} className='mr-2'></FaUser>
+                )}
               </div>
               {user ? user.user_fullname : 'Account'}
             </div>
           </li>
-          <li>
+          <li className='relative'>
             <div>
-              <Link to='/shop/cart' className='flex items-center font-[700] mx-8'>
+              <Link
+                to='/shop/cart'
+                className='flex items-center font-[700] mx-8'>
                 <FaShoppingCart size={20} className='mr-2'></FaShoppingCart>
                 Cart
               </Link>
